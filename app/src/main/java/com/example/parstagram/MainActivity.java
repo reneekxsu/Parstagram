@@ -1,5 +1,6 @@
 package com.example.parstagram;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("MainActivity", "clicked logout button");
                 ParseUser.logOut();
                 ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
+                Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(i);
+                finish();
             }
         });
     }
