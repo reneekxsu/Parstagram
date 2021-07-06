@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, "onClick sign up button");
                 Intent i = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(i);
+                finish();
             }
         });
     }
