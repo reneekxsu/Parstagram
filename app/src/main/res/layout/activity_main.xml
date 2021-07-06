@@ -6,15 +6,53 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <EditText
+        android:id="@+id/etCaption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="70dp"
+        android:ems="10"
+        android:hint="Write a caption..."
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/btnCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etCaption"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp"
+        android:text="Camera" />
+
+    <Button
+        android:id="@+id/btnPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivPreview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="POST" />
+
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/btnPost"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="272dp"
+        android:layout_marginTop="107dp"
         android:text="LOG OUT"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="288dp" />
+
+    <ImageView
+        android:id="@+id/ivPreview"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/btnCamera"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="9dp"
+        tools:srcCompat="@tools:sample/avatars" />
 </RelativeLayout>
