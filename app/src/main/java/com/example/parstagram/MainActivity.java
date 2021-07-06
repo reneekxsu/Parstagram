@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView ivPreview;
     private Button btnPost;
     private Button btnLogout;
+    private Button btnFeed;
 
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
     public String photoFileName = "photo.jpg";
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 //        queryPosts();
         
         btnLogout = findViewById(R.id.btnLogout);
+        btnFeed = findViewById(R.id.btnFeed);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +92,15 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(i);
                 finish();
+            }
+        });
+
+        btnFeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("MainActivity", "clicked feed button");
+                Intent i = new Intent(MainActivity.this, FeedActivity.class);
+                startActivity(i);
             }
         });
     }

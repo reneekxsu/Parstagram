@@ -55,4 +55,13 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="9dp"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <Button
+        android:id="@+id/btnFeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnLogout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="37dp"
+        android:text="FEED" />
 </RelativeLayout>
