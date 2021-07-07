@@ -18,17 +18,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import java.io.File;
-import java.util.List;
+import org.parceler.Parcels;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.File;
+
+public class PostActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
     private EditText etCaption;
@@ -52,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
         ivPreview = findViewById(R.id.ivPreview);
         btnPost = findViewById(R.id.btnPost);
         
-//        queryPosts();
-        
         btnLogout = findViewById(R.id.btnLogout);
         btnFeed = findViewById(R.id.btnFeed);
 
@@ -70,12 +67,12 @@ public class MainActivity extends AppCompatActivity {
                 // get description, user, and image to post
                 String description = etCaption.getText().toString();
                 if (description.isEmpty()){
-                    Toast.makeText(MainActivity.this, "Caption cannot be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostActivity.this, "Caption cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     ParseUser currentUser = ParseUser.getCurrentUser();
                     if (photoFile == null || ivPreview.getDrawable() == null){
-                        Toast.makeText(MainActivity.this, "No image", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PostActivity.this, "No image", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     savePost(description, currentUser, photoFile);
@@ -89,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("MainActivity", "clicked logout button");
                 ParseUser.logOut();
                 ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
-                Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                Intent i = new Intent(PostActivity.this, LoginActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -99,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i("MainActivity", "clicked feed button");
-                Intent i = new Intent(MainActivity.this, FeedActivity.class);
+                Intent i = new Intent(PostActivity.this, FeedActivity.class);
                 startActivity(i);
             }
         });
@@ -115,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         // wrap File object into a content provider
         // required for API >= 24
         // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
-        Uri fileProvider = FileProvider.getUriForFile(MainActivity.this, "com.codepath.fileprovider", photoFile);
+        Uri fileProvider = FileProvider.getUriForFile(PostActivity.this, "com.codepath.fileprovider", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
         // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
@@ -169,33 +166,20 @@ public class MainActivity extends AppCompatActivity {
             public void done(ParseException e) {
                 if (e != null){
                     Log.e(TAG, "Could not save", e);
-                    Toast.makeText(MainActivity.this, "Could not save", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostActivity.this, "Could not save", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     Log.i(TAG, "Post was saved to backend");
-                    Toast.makeText(MainActivity.this, "Post was saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostActivity.this, "Post was saved", Toast.LENGTH_SHORT).show();
                     etCaption.setText("");
                     // set to empty image
                     ivPreview.setImageResource(0);
-                }
-            }
-        });
-    }
-
-    private void queryPosts() {
-        // Specify which class to query
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        query.include(Post.KEY_USER);
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                if (e != null){
-                    Log.e(TAG,"Cannot get posts", e);
-                    return;
-                } else {
-                    for (Post post : posts){
-                        Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
-                    }
+                    Intent intent = new Intent();
+                    ParcelablePost p = new ParcelablePost(post);
+                    intent.putExtra("post", Parcels.wrap(p));
+                    // set result code and bundle data for response
+                    setResult(RESULT_OK,intent);
+                    finish();
                 }
             }
         });

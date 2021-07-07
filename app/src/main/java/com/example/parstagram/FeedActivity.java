@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,7 @@ public class FeedActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeContainer;
     private FloatingActionButton fabPost;
     public PostsServerClient client;
+    private final int REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +57,8 @@ public class FeedActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i("FeedActivity", "clicked post button");
-                Intent i = new Intent(FeedActivity.this, MainActivity.class);
-                startActivity(i);
+                Intent i = new Intent(FeedActivity.this, PostActivity.class);
+                startActivityForResult(i, 20);
             }
         });
 
@@ -74,33 +78,22 @@ public class FeedActivity extends AppCompatActivity {
         client.fetchTimelineAsync(adapter);
         // Now we call setRefreshing(false) to signal refresh has finished
         swipeContainer.setRefreshing(false);
-//        Log.i(TAG, "fetching timeline");
-//        // Specify which class to query
-//        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-//        // include data referred by user key
-//        query.include(Post.KEY_USER);
-//        // limit query to latest 20 items
-//        query.setLimit(20);
-//        // order posts by creation date (newest first)
-//        query.addDescendingOrder("createdAt");
-//        // start an asynchronous call for posts
-//        query.findInBackground(new FindCallback<Post>() {
-//            @Override
-//            public void done(List<Post> posts, ParseException e) {
-//                if (e != null){
-//                    Log.e(TAG,"Cannot get posts", e);
-//                    return;
-//                } else {
-//                    for (Post post : posts){
-//                        Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
-//                    }
-//                    adapter.clear();
-//                    // save received posts to list and notify adapter of new data
-//                    adapter.addAll(posts);
-//                    // Now we call setRefreshing(false) to signal refresh has finished
-//                    swipeContainer.setRefreshing(false);
-//                }
-//            }
-//        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        Log.i(TAG, "finished posting");
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
+            // get data from intent (tweet)
+            ParcelablePost p = ((ParcelablePost) Parcels.unwrap(data.getParcelableExtra("post")));
+            Post post = p.getPost();
+            // update recycler view with new tweet
+            // modify data source of tweets
+            allPosts.add(0,post);
+            // update the adapter
+            adapter.notifyItemInserted(0);
+            rvPosts.smoothScrollToPosition(0);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

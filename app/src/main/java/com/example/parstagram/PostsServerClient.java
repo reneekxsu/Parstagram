@@ -10,6 +10,8 @@ import java.util.List;
 
 public class PostsServerClient {
     public static final String TAG = "PostsServerClient";
+    PostsAdapter adapter;
+
     public void fetchTimelineAsync(PostsAdapter adapter) {
         Log.i(TAG, "fetching timeline");
         // Specify which class to query
