@@ -12,19 +12,22 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:layout_marginTop="5dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        tools:text="username" />
 
     <ImageView
         android:id="@+id/ivPost"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginTop="5dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        tools:srcCompat="@tools:sample/avatars"/>
 
     <TextView
         android:id="@+id/tvCaption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivPost"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="5dp"
+        tools:text="caption" />
 </LinearLayout>

@@ -1,6 +1,8 @@
 package com.example.parstagram;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
 
 import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -57,6 +60,20 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.Viewholder>{
             tvUsername = itemView.findViewById(R.id.tvUsername);
             ivImage = itemView.findViewById(R.id.ivPost);
             tvDescription = itemView.findViewById(R.id.tvCaption);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION){
+                        Log.i("PostsAdapter", "trying to go to details view");
+                        Post post = posts.get(position);
+                        ParcelablePost p = new ParcelablePost(post);
+                        Intent i = new Intent(context, PostDetailsActivity.class);
+                        i.putExtra(ParcelablePost.class.getSimpleName(), Parcels.wrap(p));
+                        context.startActivity(i);
+                    }
+                }
+            });
         }
 
         public void bind(Post post) {
