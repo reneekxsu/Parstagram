@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 } else {
                     ParseUser currentUser = ParseUser.getCurrentUser();
-                    if ((photoFile) == null || (ivPreview.getDrawable() == null)){
+                    if (photoFile == null || ivPreview.getDrawable() == null){
                         Toast.makeText(MainActivity.this, "No image", Toast.LENGTH_SHORT).show();
                         return;
                     }

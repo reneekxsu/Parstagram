@@ -11,9 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +22,7 @@ public class FeedActivity extends AppCompatActivity {
     public final String TAG = "FeedActivity";
     private SwipeRefreshLayout swipeContainer;
     private FloatingActionButton fabPost;
+    public PostsServerClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +33,7 @@ public class FeedActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                fetchTimelineAsync();
+                fetchTimelineAsync(adapter);
             }
         });
 
@@ -44,6 +42,8 @@ public class FeedActivity extends AppCompatActivity {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
+        client = new PostsServerClient();
 
         rvPosts = findViewById(R.id.rvPosts);
 
@@ -67,65 +67,40 @@ public class FeedActivity extends AppCompatActivity {
         rvPosts.setLayoutManager(new LinearLayoutManager(this));
 
         // query posts from Parstagram
-        queryPosts();
+        fetchTimelineAsync(adapter);
     }
 
-    private void fetchTimelineAsync() {
-        Log.i(TAG, "fetching timeline");
-        // Specify which class to query
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        // include data referred by user key
-        query.include(Post.KEY_USER);
-        // limit query to latest 20 items
-        query.setLimit(20);
-        // order posts by creation date (newest first)
-        query.addDescendingOrder("createdAt");
-        // start an asynchronous call for posts
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                if (e != null){
-                    Log.e(TAG,"Cannot get posts", e);
-                    return;
-                } else {
-                    for (Post post : posts){
-                        Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
-                    }
-                    adapter.clear();
-                    // save received posts to list and notify adapter of new data
-                    adapter.addAll(posts);
-                    // Now we call setRefreshing(false) to signal refresh has finished
-                    swipeContainer.setRefreshing(false);
-                }
-            }
-        });
-    }
-
-    private void queryPosts() {
-        // Specify which class to query
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        // include data referred by user key
-        query.include(Post.KEY_USER);
-        // limit query to latest 20 items
-        query.setLimit(20);
-        // order posts by creation date (newest first)
-        query.addDescendingOrder("createdAt");
-        // start an asynchronous call for posts
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                if (e != null){
-                    Log.e(TAG,"Cannot get posts", e);
-                    return;
-                } else {
-                    for (Post post : posts){
-                        Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
-                    }
-                    // save received posts to list and notify adapter of new data
-                    allPosts.addAll(posts);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
+    private void fetchTimelineAsync(PostsAdapter adapter) {
+        client.fetchTimelineAsync(adapter);
+        // Now we call setRefreshing(false) to signal refresh has finished
+        swipeContainer.setRefreshing(false);
+//        Log.i(TAG, "fetching timeline");
+//        // Specify which class to query
+//        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+//        // include data referred by user key
+//        query.include(Post.KEY_USER);
+//        // limit query to latest 20 items
+//        query.setLimit(20);
+//        // order posts by creation date (newest first)
+//        query.addDescendingOrder("createdAt");
+//        // start an asynchronous call for posts
+//        query.findInBackground(new FindCallback<Post>() {
+//            @Override
+//            public void done(List<Post> posts, ParseException e) {
+//                if (e != null){
+//                    Log.e(TAG,"Cannot get posts", e);
+//                    return;
+//                } else {
+//                    for (Post post : posts){
+//                        Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
+//                    }
+//                    adapter.clear();
+//                    // save received posts to list and notify adapter of new data
+//                    adapter.addAll(posts);
+//                    // Now we call setRefreshing(false) to signal refresh has finished
+//                    swipeContainer.setRefreshing(false);
+//                }
+//            }
+//        });
     }
 }
