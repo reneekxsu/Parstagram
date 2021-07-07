@@ -1,13 +1,16 @@
 package com.example.parstagram;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -21,6 +24,7 @@ public class FeedActivity extends AppCompatActivity {
     protected List<Post> allPosts;
     public final String TAG = "FeedActivity";
     private SwipeRefreshLayout swipeContainer;
+    private FloatingActionButton fabPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,17 @@ public class FeedActivity extends AppCompatActivity {
                 android.R.color.holo_red_light);
 
         rvPosts = findViewById(R.id.rvPosts);
+
+        fabPost = findViewById(R.id.fabPost);
+
+        fabPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("FeedActivity", "clicked post button");
+                Intent i = new Intent(FeedActivity.this, MainActivity.class);
+                startActivity(i);
+            }
+        });
 
         // initialize the array that will hold posts and create a PostsAdapter
         allPosts = new ArrayList<>();

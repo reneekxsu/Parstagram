@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         if (ParseUser.getCurrentUser()!=null){
-            goMainActivity();
+            goFeedActivity();
         }
 
         etUsername = findViewById(R.id.etUsername);
@@ -67,15 +67,15 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 } else {
                     // navigate to main activity if sign in credentials are correct
-                    goMainActivity();
+                    goFeedActivity();
                     Toast.makeText(LoginActivity.this,"Login success", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    private void goMainActivity() {
-        Intent i = new Intent(this, MainActivity.class);
+    private void goFeedActivity() {
+        Intent i = new Intent(this, FeedActivity.class);
         startActivity(i);
         // allows back button not to lead us back to login
         finish();
