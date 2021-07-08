@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 
 import org.parceler.Parcels;
 
@@ -37,7 +39,7 @@ public class FeedActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                fetchTimelineAsync(adapter);
+                fetchTimelineAsync();
             }
         });
 
@@ -71,24 +73,41 @@ public class FeedActivity extends AppCompatActivity {
         rvPosts.setLayoutManager(new LinearLayoutManager(this));
 
         // query posts from Parstagram
-        fetchTimelineAsync(adapter);
+        fetchTimelineAsync();
     }
 
-    private void fetchTimelineAsync(PostsAdapter adapter) {
-        client.fetchTimelineAsync(adapter);
+    private void fetchTimelineAsync() {
+        client.fetchTimelineAsync(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                if (e != null){
+                    Log.e(TAG,"Cannot get posts", e);
+                    return;
+                } else {
+                    for (Post post : posts){
+                        Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
+                    }
+                    adapter.clear();
+                    // save received posts to list and notify adapter of new data
+                    adapter.addAll(posts);
+                }
+            }
+        });
         // Now we call setRefreshing(false) to signal refresh has finished
-        swipeContainer.setRefreshing(false);
+        if (swipeContainer.isRefreshing()){
+            swipeContainer.setRefreshing(false);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         Log.i(TAG, "finished posting");
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
-            // get data from intent (tweet)
+            // get data from intent (post)
             ParcelablePost p = ((ParcelablePost) Parcels.unwrap(data.getParcelableExtra("post")));
             Post post = p.getPost();
-            // update recycler view with new tweet
-            // modify data source of tweets
+            // update recycler view with new post
+            // modify data source of posts
             allPosts.add(0,post);
             // update the adapter
             adapter.notifyItemInserted(0);
