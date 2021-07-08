@@ -76,7 +76,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goFeedActivity() {
-        Intent i = new Intent(this, FeedActivity.class);
+//        Intent i = new Intent(this, FeedActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         // allows back button not to lead us back to login
         finish();
