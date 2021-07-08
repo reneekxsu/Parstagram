@@ -1,10 +1,10 @@
-package com.example.parstagram;
+package com.example.parstagram.models;
 
 import org.parceler.Parcel;
 
 @Parcel
 public class ParcelablePost {
-    Post p;
+    public Post p;
     public ParcelablePost(){}
 
     public ParcelablePost(Post p){

@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.parstagram.fragments.HomeFragment;
+import com.example.parstagram.fragments.PostFragment;
+import com.example.parstagram.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {

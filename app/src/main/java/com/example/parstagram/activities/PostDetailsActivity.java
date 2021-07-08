@@ -1,4 +1,4 @@
-package com.example.parstagram;
+package com.example.parstagram.activities;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.parstagram.models.ParcelablePost;
+import com.example.parstagram.R;
+import com.example.parstagram.models.Post;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;

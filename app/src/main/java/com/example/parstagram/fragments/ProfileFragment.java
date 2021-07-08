@@ -1,4 +1,4 @@
-package com.example.parstagram;
+package com.example.parstagram.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.parstagram.activities.LoginActivity;
+import com.example.parstagram.R;
 import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;

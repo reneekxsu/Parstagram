@@ -1,57 +1,62 @@
-package com.example.parstagram;
+package com.example.parstagram.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
 
+import com.example.parstagram.models.BitmapScaler;
+import com.example.parstagram.models.ParcelablePost;
+import com.example.parstagram.R;
+import com.example.parstagram.models.Post;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.parceler.Parcels;
+
 import java.io.File;
 
-public class PostFragment extends Fragment {
-    public static final String TAG = "PostFragment";
+public class PostActivity extends AppCompatActivity {
+    public static final String TAG = "PostActivity";
 
     private EditText etCaption;
     private Button btnCamera;
     private ImageView ivPreview;
     private Button btnPost;
+    private Button btnLogout;
+    private Button btnFeed;
 
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
     public String photoFileName = "photo.jpg";
     File photoFile;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_post, container, false);
-    }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_post);
 
-    // This event is triggered soon after onCreateView().
-    // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        // Setup any handles to view objects here
-        etCaption = view.findViewById(R.id.etCaption);
-        btnCamera = view.findViewById(R.id.btnCamera);
-        ivPreview = view.findViewById(R.id.ivPreview);
-        btnPost = view.findViewById(R.id.btnPost);
+        etCaption = findViewById(R.id.etCaption);
+        btnCamera = findViewById(R.id.btnCamera);
+        ivPreview = findViewById(R.id.ivPreview);
+        btnPost = findViewById(R.id.btnPost);
+        
+        btnLogout = findViewById(R.id.btnLogout);
+        btnFeed = findViewById(R.id.btnFeed);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,16 +71,37 @@ public class PostFragment extends Fragment {
                 // get description, user, and image to post
                 String description = etCaption.getText().toString();
                 if (description.isEmpty()){
-                    Toast.makeText(view.getContext(), "Caption cannot be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostActivity.this, "Caption cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     ParseUser currentUser = ParseUser.getCurrentUser();
                     if (photoFile == null || ivPreview.getDrawable() == null){
-                        Toast.makeText(view.getContext(), "No image", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PostActivity.this, "No image", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     savePost(description, currentUser, photoFile);
                 }
+            }
+        });
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("PostActivity", "clicked logout button");
+                ParseUser.logOut();
+                ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
+                Intent i = new Intent(PostActivity.this, LoginActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
+        btnFeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("PostActivity", "clicked feed button");
+                Intent i = new Intent(PostActivity.this, FeedActivity.class);
+                startActivity(i);
             }
         });
     }
@@ -90,14 +116,31 @@ public class PostFragment extends Fragment {
         // wrap File object into a content provider
         // required for API >= 24
         // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
-        Uri fileProvider = FileProvider.getUriForFile(getView().getContext(), "com.codepath.fileprovider", photoFile);
+        Uri fileProvider = FileProvider.getUriForFile(PostActivity.this, "com.codepath.fileprovider", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
         // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
         // So as long as the result is not null, it's safe to use the intent.
-        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+        if (intent.resolveActivity(getPackageManager()) != null) {
             // Start the image capture intent to take photo
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // by this point we have the camera photo on disk
+                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                // RESIZE BITMAP
+                Bitmap resizedBitmap = BitmapScaler.scaleToFitWidth(takenImage, 100);
+                // Load the taken image into a preview
+                ivPreview.setImageBitmap(resizedBitmap);
+            } else { // Result was a failure
+                Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -106,7 +149,7 @@ public class PostFragment extends Fragment {
         // Get safe storage directory for photos
         // Use `getExternalFilesDir` on Context to access package-specific directories.
         // This way, we don't need to request external read/write runtime permissions.
-        File mediaStorageDir = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
+        File mediaStorageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
@@ -127,20 +170,20 @@ public class PostFragment extends Fragment {
             public void done(ParseException e) {
                 if (e != null){
                     Log.e(TAG, "Could not save", e);
-                    Toast.makeText(getView().getContext(), "Could not save", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostActivity.this, "Could not save", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     Log.i(TAG, "Post was saved to backend");
-                    Toast.makeText(getView().getContext(), "Post was saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostActivity.this, "Post was saved", Toast.LENGTH_SHORT).show();
                     etCaption.setText("");
                     // set to empty image
                     ivPreview.setImageResource(0);
-//                    Intent intent = new Intent();
-//                    ParcelablePost p = new ParcelablePost(post);
-//                    intent.putExtra("post", Parcels.wrap(p));
-//                    // set result code and bundle data for response
-//                    setResult(RESULT_OK,intent);
-//                    finish();
+                    Intent intent = new Intent();
+                    ParcelablePost p = new ParcelablePost(post);
+                    intent.putExtra("post", Parcels.wrap(p));
+                    // set result code and bundle data for response
+                    setResult(RESULT_OK,intent);
+                    finish();
                 }
             }
         });

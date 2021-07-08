@@ -22,8 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Parstagram">
         <activity android:name=".MainActivity"></activity>
-        <activity android:name=".PostDetailsActivity" />
-        <activity android:name=".FeedActivity" />
+        <activity android:name=".activities.PostDetailsActivity" />
+        <activity android:name=".activities.FeedActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -35,15 +35,15 @@
                 android:resource="@xml/fileprovider" />
         </provider>
 
-        <activity android:name=".PostActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".activities.PostActivity" />
+        <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignUpActivity" />
+        <activity android:name=".activities.SignUpActivity" />
     </application>
 
 </manifest>

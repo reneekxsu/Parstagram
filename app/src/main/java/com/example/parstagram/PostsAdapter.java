@@ -13,6 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.parstagram.activities.PostDetailsActivity;
+import com.example.parstagram.models.ParcelablePost;
+import com.example.parstagram.models.Post;
 import com.parse.ParseFile;
 
 import org.jetbrains.annotations.NotNull;
