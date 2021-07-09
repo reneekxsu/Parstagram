@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_margin="0dp">
 
     <TextView
         android:id="@+id/tvUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginStart="14dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         tools:text="username" />
 
@@ -19,15 +18,23 @@
         android:id="@+id/ivPost"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_marginTop="5dp"
+        android:layout_below="@+id/tvUsername"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/ivlines"
         android:scaleType="centerCrop"
-        tools:srcCompat="@tools:sample/avatars"/>
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tvCaption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivPost"
-        android:layout_marginTop="5dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
         tools:text="caption" />
-</LinearLayout>
+</RelativeLayout>
