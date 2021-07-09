@@ -29,23 +29,7 @@ public class HomeFragment extends Fragment {
     public final String TAG = "HomeFragment";
     private SwipeRefreshLayout swipeContainer;
     public PostsServerClient client;
-    private final int REQUEST_CODE = 20;
-    ProgressBar pb;
-
-    public int postPosition;
-    Post postReceived;
-    /*
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            Log.d(TAG, "we received a post");
-           ParcelablePost pPostReceived = Parcels.unwrap(getArguments().getParcelable("post"));
-           postReceived = pPostReceived.getPost();
-
-        }
-    } */
-
+    protected ProgressBar pb;
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -94,7 +78,7 @@ public class HomeFragment extends Fragment {
         Log.i(TAG, "querying posts");
         fetchTimelineAsync();
     }
-    private void fetchTimelineAsync() {
+    protected void fetchTimelineAsync() {
         client.fetchTimelineAsync(new FindCallback<Post>() {
             @Override
             public void done(List<Post> posts, ParseException e) {
@@ -116,9 +100,5 @@ public class HomeFragment extends Fragment {
         if (swipeContainer.isRefreshing()){
             swipeContainer.setRefreshing(false);
         }
-    }
-
-    public void savePosition(){
-
     }
 }
