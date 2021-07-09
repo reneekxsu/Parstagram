@@ -1,7 +1,9 @@
 package com.example.parstagram;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -34,34 +36,60 @@ public class MainActivity extends AppCompatActivity implements PostFragment.Post
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_main);
 
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem homeTab = menu.findItem(R.id.action_home);
+        MenuItem postTab = menu.findItem(R.id.action_post);
+        MenuItem profTab = menu.findItem(R.id.action_profile);
+
+        Drawable homeOutline = getDrawable(R.drawable.instagram_home_outline_24);
+        Drawable homeFilled = getDrawable(R.drawable.instagram_home_filled_24);
+        homeTab.setIcon(homeOutline);
+
+        Drawable postOutline = getDrawable(R.drawable.instagram_new_post_outline_24);
+        Drawable postFilled = getDrawable(R.drawable.instagram_new_post_filled_24);
+        postTab.setIcon(postOutline);
+
+        Drawable profOutline = getDrawable(R.drawable.instagram_user_outline_24);
+        Drawable profFilled = getDrawable(R.drawable.instagram_user_filled_24);
+        profTab.setIcon(profOutline);
+
         // handle navigation selection
         bottomNavigationView.setOnNavigationItemSelectedListener(
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment fragment;
-                    switch (item.getItemId()) {
-                        case R.id.action_home:
-                            Log.i("MainActivity", "home fragment");
-                            fragment = fragment1;
-                            break;
-                        case R.id.action_post:
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        Fragment fragment;
+                        switch (item.getItemId()) {
+                            case R.id.action_home:
+                                Log.i("MainActivity", "home fragment");
+                                fragment = fragment1;
+                                item.setIcon(homeFilled);
+                                postTab.setIcon(postOutline);
+                                profTab.setIcon(profOutline);
+                                break;
+                            case R.id.action_post:
 
-                            Log.i("MainActivity", "post fragment");
-                            fragment = fragment2;
-                            break;
-                        case R.id.action_profile:
-                            Log.i("MainActivity", "profile fragment");
-                            fragment = fragment3;
-                            break;
-                        default:
-                            fragment = fragment1;
-                            break;
+                                Log.i("MainActivity", "post fragment");
+                                fragment = fragment2;
+                                item.setIcon(postFilled);
+                                homeTab.setIcon(homeOutline);
+                                profTab.setIcon(profOutline);
+                                break;
+                            case R.id.action_profile:
+                                Log.i("MainActivity", "profile fragment");
+                                fragment = fragment3;
+                                item.setIcon(profFilled);
+                                homeTab.setIcon(homeOutline);
+                                postTab.setIcon(postOutline);
+                                break;
+                            default:
+                                fragment = fragment1;
+                                break;
+                        }
+                        fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+                        return true;
                     }
-                    fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
-                    return true;
-                }
-            });
+                });
         // Set default selection
         bottomNavigationView.setSelectedItemId(R.id.action_home);
     }

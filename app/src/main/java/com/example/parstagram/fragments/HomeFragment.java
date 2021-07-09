@@ -66,6 +66,7 @@ public class HomeFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.i(TAG, "refreshing");
                 fetchTimelineAsync();
             }
         });
@@ -90,6 +91,7 @@ public class HomeFragment extends Fragment {
         rvPosts.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         // query posts from Parstagram
+        Log.i(TAG, "querying posts");
         fetchTimelineAsync();
     }
     private void fetchTimelineAsync() {
