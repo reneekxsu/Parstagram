@@ -1,6 +1,9 @@
 package com.example.parstagram.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,15 +17,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.example.parstagram.R;
+import com.example.parstagram.models.BitmapScaler;
 import com.example.parstagram.models.Post;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
@@ -37,6 +45,23 @@ public class PostFragment extends Fragment {
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
     public String photoFileName = "photo.jpg";
     File photoFile;
+
+    PostFragmentListener listener;
+
+    public interface PostFragmentListener{
+        void goHomeFragment(Post post);
+    }
+
+    @Override
+    public void onAttach(@NonNull @NotNull Context context) {
+        super.onAttach(context);
+        if(context instanceof PostFragmentListener){
+            listener = (PostFragmentListener) context;
+        }
+        else{
+            Log.e(TAG, "The context that called me is not implementing PostFragmentListener");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -119,6 +144,23 @@ public class PostFragment extends Fragment {
         return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == getActivity().RESULT_OK) {
+                // by this point we have the camera photo on disk
+                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                // RESIZE BITMAP
+                Bitmap resizedBitmap = BitmapScaler.scaleToFitWidth(takenImage, 100);
+                // Load the taken image into a preview
+                ivPreview.setImageBitmap(resizedBitmap);
+            } else { // Result was a failure
+                Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     private void savePost(String description, ParseUser currentUser, File photoFile) {
         Post post = new Post();
         post.setDescription(description);
@@ -137,12 +179,7 @@ public class PostFragment extends Fragment {
                     etCaption.setText("");
                     // set to empty image
                     ivPreview.setImageResource(0);
-//                    Intent intent = new Intent();
-//                    ParcelablePost p = new ParcelablePost(post);
-//                    intent.putExtra("post", Parcels.wrap(p));
-//                    // set result code and bundle data for response
-//                    setResult(RESULT_OK,intent);
-//                    finish();
+                    listener.goHomeFragment(post);
                 }
             }
         });

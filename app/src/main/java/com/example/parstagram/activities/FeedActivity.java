@@ -13,10 +13,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.parstagram.PostsAdapter;
 import com.example.parstagram.PostsServerClient;
 import com.example.parstagram.R;
+import com.example.parstagram.models.ParcelablePost;
 import com.example.parstagram.models.Post;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,20 +103,20 @@ public class FeedActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
-//        Log.i(TAG, "finished posting");
-//        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
-//            // get data from intent (post)
-//            ParcelablePost p = ((ParcelablePost) Parcels.unwrap(data.getParcelableExtra("post")));
-//            Post post = p.getPost();
-//            // update recycler view with new post
-//            // modify data source of posts
-//            allPosts.add(0,post);
-//            // update the adapter
-//            adapter.notifyItemInserted(0);
-//            rvPosts.smoothScrollToPosition(0);
-//        }
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @androidx.annotation.Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        Log.i(TAG, "finished posting");
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
+            // get data from intent (post)
+            ParcelablePost p = ((ParcelablePost) Parcels.unwrap(data.getParcelableExtra("post")));
+            Post post = p.getPost();
+            // update recycler view with new post
+            // modify data source of posts
+            allPosts.add(0,post);
+            // update the adapter
+            adapter.notifyItemInserted(0);
+            rvPosts.smoothScrollToPosition(0);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

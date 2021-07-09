@@ -18,9 +18,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.example.parstagram.MainActivity;
+import com.example.parstagram.R;
 import com.example.parstagram.models.BitmapScaler;
 import com.example.parstagram.models.ParcelablePost;
-import com.example.parstagram.R;
 import com.example.parstagram.models.Post;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -178,6 +179,8 @@ public class PostActivity extends AppCompatActivity {
                     etCaption.setText("");
                     // set to empty image
                     ivPreview.setImageResource(0);
+                    Intent i = new Intent(PostActivity.this, MainActivity.class);
+                    startActivity(i);
                     Intent intent = new Intent();
                     ParcelablePost p = new ParcelablePost(post);
                     intent.putExtra("post", Parcels.wrap(p));
